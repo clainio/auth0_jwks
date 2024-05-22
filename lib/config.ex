@@ -27,6 +27,6 @@ defmodule Auth0Jwks.Config do
   def aud, do: get_config_or_error(:auth0_jwks, :aud)
   def jwks_url, do: iss() <> ".well-known/jwks.json"
 
-  def json_library, do: Application.get_env(:auth0_jwks, :json_library) || Poison
+  def json_library, do: Application.get_env(:auth0_jwks, :json_library) || Jason
   def timeout, do: Application.get_env(:auth0_jwks, :timeout) || 50_000
 end

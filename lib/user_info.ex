@@ -1,19 +1,15 @@
 defmodule Auth0Jwks.UserInfo do
-  use HTTPoison.Base
-
   alias Auth0Jwks.Config
 
   def from_token(token) do
-    auth_header = {"Authorization", "Bearer #{token}"}
+    req = Req.new(base_url: Config.iss(), headers: %{authorization: "Bearer #{token}"})
 
-    with {:ok, response} <- get("userinfo", [auth_header]) do
-      response
-      |> Map.get(:body)
-      |> Config.json_library().decode()
-    end
+    Req.get!(req,
+      url: "userinfo",
+      connect_options: [
+        timeout: Config.timeout()
+      ],
+      receive_timeout: Config.timeout()
+    ).body
   end
-
-  def process_url(path), do: Auth0Jwks.Config.iss() <> path
-  def process_request_options(opts), do: opts ++ [timeout: Auth0Jwks.Config.timeout(), recv_timeout: Auth0Jwks.Config.timeout()]
-
 end
